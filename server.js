@@ -120,7 +120,7 @@ app.post("/add-song", async (req, res) => {
 
     try {
         await db.collection("playlist").add({ song, nickname, timestamp: Date.now() });
-        res.json({ message: "Song added successfully!", data: response.data });
+        res.json({ message: "Song added successfully!" });
     } catch (error) {
         console.error("Error adding song:", error.response?.data || error.message);
         res.status(500).json({ error: "Error adding song" });
