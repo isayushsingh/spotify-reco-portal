@@ -121,10 +121,11 @@ app.post("/add-song", async (req, res) => {
     try {
         // 🔹 Add to Firestore
         await db.collection("playlist").add({ song, nickname, timestamp: Date.now() });
+        // 🔹 Add to Spotify Playlist
         const response = await axios.post(
             `https://api.spotify.com/v1/playlists/${PLAYLIST_ID}/tracks`,
-            { uris: [song.uri] },
-            { headers: { Authorization: `Bearer ${spotifyAccessToken}` } }
+            { uris: [song.uri ?? ''], position: 0 }, // ✅ Position inside body
+            { headers: { Authorization: `Bearer ${spotifyAccessToken}` } } 
         );
 
         // ✅ Send Response Once
