@@ -121,7 +121,7 @@ app.post("/add-song", async (req, res) => {
     try {
         // 🔹 Add to Firestore
         await db.collection("playlist").add({ song, nickname, timestamp: Date.now() });
-        const response = await axios.get(
+        const response = await axios.post(
             `https://api.spotify.com/v1/playlists/${PLAYLIST_ID}/tracks`,
             { uris: [song.uri] },
             { headers: { Authorization: `Bearer ${spotifyAccessToken}` } }
