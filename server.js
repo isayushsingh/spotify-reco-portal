@@ -9,7 +9,7 @@ admin.initializeApp({credential: admin.credential.cert(serviceAccount)});
 const db = admin.firestore();
 const app = express();
 const allowedOrigins = [process.env.FRONTEND_URL, "http://localhost:3000"];
-const PLAYLIST_ID = "4ASUIMy8D6mZPmcuZFhAD7";
+
 app.use(cors({
     origin: function (origin, callback) {
         if (!origin || allowedOrigins.includes(origin)) {
@@ -119,16 +119,7 @@ app.post("/add-song", async (req, res) => {
     if (!song) return res.status(400).json({ error: "Song required" });
 
     try {
-        // 🔹 Add to Firestore
         await db.collection("playlist").add({ song, nickname, timestamp: Date.now() });
-        // 🔹 Add to Spotify Playlist
-        const response = await axios.post(
-            `https://api.spotify.com/v1/playlists/${PLAYLIST_ID}/tracks`,
-            { uris: [song.uri ?? ''], position: 0 }, // ✅ Position inside body
-            { headers: { Authorization: `Bearer ${spotifyAccessToken}` } } 
-        );
-
-        // ✅ Send Response Once
         res.json({ message: "Song added successfully!", data: response.data });
     } catch (error) {
         console.error("Error adding song:", error.response?.data || error.message);
